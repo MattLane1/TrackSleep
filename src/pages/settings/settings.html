@@ -1,8 +1,6 @@
 <!--
-  Generated template for the Settings page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
+    Purpose: This is the settings page. It allows the user to change settings in the program, 
+    for now, that is limited to changing the colour of the chart. 
 -->
 <ion-header>
 
@@ -12,16 +10,19 @@
 
 </ion-header>
 
-
 <ion-content padding>
-
-        <p>
-           Settings.
-        </p>
-        <p>
-            Settings.
-        </p>
-
-        <p>Settings.</p>
-
+    <ion-list>
+        <div class="row" style="width:90%;">
+            <div class="col-md-9">
+                
+                <!--List of colour options-->
+                <button ion-button full color="m_red" (click)="red()">Red</button> <ion-item>{{ redCheck }}<ion-checkbox></ion-checkbox></ion-item>
+                <button ion-button full color="m_green" (click)="green()">Green</button>
+                <button ion-button full color="m_blue" (click)="blue()">Blue</button>
+                <button ion-button full color="m_yellow" (click)="yellow()">Yellow</button>
+                <button ion-button full color="m_grey" (click)="grey()">Grey</button>
+                <button ion-button full color="m_black" (click)="black()">Black</button>
+            </div>
+        </div>
+    </ion-list>
 </ion-content>

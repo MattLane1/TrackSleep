@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController } from 'ionic-angular';
+import { Events } from 'ionic-angular';
 
 
 @Component({
@@ -24,7 +25,32 @@ export class HomePage {
     //Variable for how long they slept
     timeSlept: string;
 
-    constructor(public navCtrl: NavController, public storage: Storage) {
+    constructor(public navCtrl: NavController, public storage: Storage, public events: Events) {
+
+        this.events.subscribe('colour:changed', eventData => {
+
+          //  console.log("======COLOUR INFO======");
+          //  console.log("=colourChosen=", eventData);
+          //  console.log("=colourList=", this.lineChartColors);
+          //  console.log("=colourList[0]=", this.lineChartColors[0]);
+
+
+
+            console.log("=colourList[0]['backgroundColor']=--------Test", this.lineChartColors[0]['backgroundColor']);
+            this.lineChartColors[0]['backgroundColor'] = eventData;
+            console.log("=colourList[0]['backgroundColor']=--------Test", this.lineChartColors[0]['backgroundColor']);
+
+
+            //this.lineChartColors[0]['backgroundColor'];
+            // just trying refresh full variable
+            this.lineChartColors = this.lineChartColors.slice();
+
+
+            //console.log("=colourList[1]=", this.lineChartColors[1]);
+          //  console.log("=colourList[1]['backgroundColour']=", this.lineChartColors[1]['backgroundColour']);
+          //  console.log("=======================");
+           // this.lineChartColors[0]['backgroundColour'] = eventData;
+        });
     }
 
 
@@ -36,6 +62,7 @@ export class HomePage {
     public lineChartOptions: any = {
         responsive: true,
         animation: false,
+        
         scales: {
             xAxes: [{
                 ticks: {
@@ -117,6 +144,7 @@ export class HomePage {
          var curTime;
          var curDate;
 
+         
          //Get the current and time and date
          this.currentTime = new Date().toLocaleTimeString();
          curTime = this.currentTime.split(":");
@@ -197,10 +225,22 @@ export class HomePage {
 
          //********
 
+        //FOR TESTING --ONLY--
+         Number(passedHours += 2);
+
          //Record the time slept
          this.lineChartLabels.push(this.currentDate);
          this.lineChartData[0].data.push(Number((String(passedHours).concat(".").concat(passedMins))));
 
+         this.lineChartData[0]['data'][1]--;
+         // just trying refresh full variable
+         this.lineChartData = this.lineChartData.slice();
+
+        /*
+         let data = this.lineChartData;
+         delete this.lineChartData;
+         this.lineChartData = data;
+        */
          //DEBUG
          console.log('----TIME DIFFERENCE-----');
 
