@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController } from 'ionic-angular';
 import { Events } from 'ionic-angular';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 
 @Component({
@@ -9,7 +10,9 @@ import { Events } from 'ionic-angular';
     templateUrl: 'home.html'
 })
 
+
 export class HomePage {
+    items: FirebaseListObservable<any[]>;
 
     disableSleep;
     disableWake;
@@ -25,7 +28,7 @@ export class HomePage {
     //Variable for how long they slept
     timeSlept: string;
 
-    constructor(public navCtrl: NavController, public storage: Storage, public events: Events) {
+    constructor(public navCtrl: NavController, public storage: Storage, public events: Events, af: AngularFire) {
 
         this.events.subscribe('colour:changed', eventData => {
 
@@ -34,6 +37,11 @@ export class HomePage {
           //  console.log("=colourList=", this.lineChartColors);
           //  console.log("=colourList[0]=", this.lineChartColors[0]);
 
+            const itemObservable = af.database.object('/item');
+            itemObservable.update({ name: 'Golum!' });
+
+            this.items = af.database.list('/items');
+            console.log(this.items);
 
 
             console.log("=colourList[0]['backgroundColor']=--------Test", this.lineChartColors[0]['backgroundColor']);
@@ -51,8 +59,8 @@ export class HomePage {
           //  console.log("=======================");
            // this.lineChartColors[0]['backgroundColour'] = eventData;
         });
+        this.disableWake = true;
     }
-
 
     //Create the graph
     public lineChartData: Array<any> = [
@@ -132,7 +140,7 @@ export class HomePage {
     wake() {
          //Disable the sleep button, since we are already sleeping
         this.disableSleep = false;
-        this.disableWake = this;
+        this.disableWake = true;
 
          var passedMins;
          var passedHours;
@@ -181,6 +189,8 @@ export class HomePage {
              passedMins = Math.floor((passedMins - (passedHours * 60)));
          }
 
+        
+
          /*
          //TEMP
          var tempMins = (passedMins / 100);
@@ -226,7 +236,7 @@ export class HomePage {
          //********
 
         //FOR TESTING --ONLY--
-         Number(passedHours += 2);
+        // Number(passedHours += 2);
 
          //Record the time slept
          this.lineChartLabels.push(this.currentDate);
@@ -235,6 +245,13 @@ export class HomePage {
          this.lineChartData[0]['data'][1]--;
          // just trying refresh full variable
          this.lineChartData = this.lineChartData.slice();
+
+         var comboArray: Array<any> = [0,0];
+         comboArray[0] = this.lineChartData;
+         comboArray[1] = this.lineChartLabels;
+
+
+         this.events.publish('SleepWake:wake', comboArray);
 
         /*
          let data = this.lineChartData;
@@ -256,6 +273,7 @@ export class HomePage {
         console.log('passedHours', passedHours);
         console.log('passedMins', passedMins);
         console.log('------------------------');
+
     }
 }
 

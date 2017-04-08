@@ -26,7 +26,7 @@ export class SettingsPage {
     red()
     {
         this.events.publish('colour:changed', "#ff0000");
-        redCheck: true;
+       // redCheck: true;
     }
 
     //The user has selected Green

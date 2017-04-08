@@ -10,6 +10,16 @@ import { SettingsPage } from '../pages/settings/settings';
 import { ChartsModule } from 'ng2-charts';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { AngularFireModule } from 'angularfire2';
+
+// Must export the config
+export const firebaseConfig = {
+    apiKey: 'AIzaSyB1URLpDZTcs0D57XaFZRpoLC - zGIh4EtQ',
+    authDomain: 'com.ionicframework.helloworldtabs775447',
+    databaseURL: 'https://sleeptracker-23f13.firebaseio.com/',
+    storageBucket: '<your-storage-bucket>',
+    messagingSenderId: '<your-messaging-sender-id>'
+};
 
 @NgModule({
   declarations: [
@@ -23,7 +33,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   imports: [
       IonicModule.forRoot(MyApp),
       IonicStorageModule.forRoot(),
-      ChartsModule
+      ChartsModule,
+      AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
