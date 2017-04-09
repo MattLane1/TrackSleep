@@ -37,52 +37,28 @@ export class HomePage {
           //  console.log("=colourList=", this.lineChartColors);
           //  console.log("=colourList[0]=", this.lineChartColors[0]);
 
-            console.log("Ping");
             const itemObservable = af.database.object('/item');
             itemObservable.update({ name: 'Golum!' });
-            console.log("Ping");
 
-            console.log("Ping");
             this.items = af.database.list('/items');
             console.log(this.items);
-            console.log("Ping");
+
 
             console.log("=colourList[0]['backgroundColor']=--------Test", this.lineChartColors[0]['backgroundColor']);
             this.lineChartColors[0]['backgroundColor'] = eventData;
             console.log("=colourList[0]['backgroundColor']=--------Test", this.lineChartColors[0]['backgroundColor']);
 
+
             //this.lineChartColors[0]['backgroundColor'];
             // just trying refresh full variable
-            console.log("Ping");
             this.lineChartColors = this.lineChartColors.slice();
-            console.log("Ping");
+
 
             //console.log("=colourList[1]=", this.lineChartColors[1]);
           //  console.log("=colourList[1]['backgroundColour']=", this.lineChartColors[1]['backgroundColour']);
           //  console.log("=======================");
            // this.lineChartColors[0]['backgroundColour'] = eventData;
         });
-
-        /*
-        this.events.subscribe('Array:times', userEventData => {
-            this.lineChartData = userEventData;
-            console.log("noZero", this.lineChartData);
-            console.log("Ping");
-        });
-        //----------------------------------
-        this.events.subscribe('Array:dates', userEventData => {
-            console.log("Pinga", userEventData);
-            console.log('undoneArray', this.lineChartLabels);
-            console.log("Pang");
-            //this.lineChartLabels['data'] = userEventData;
-             /*BAD LINE!!!------------------------------------------------*//*   this.lineChartLabels[0] = userEventData;
-            console.log("Pong");
-            console.log("Zero", this.lineChartLabels[0]);
-            console.log("Pingo");
-        });
-        */
-        //----------------------------------
-        console.log("Ping");
         this.disableWake = true;
     }
 
@@ -90,9 +66,7 @@ export class HomePage {
     public lineChartData: Array<any> = [
         { data: [8.2, 7.5, 9.4, 6.8, 10.2, 7.8, 8.5, 9.2, 8, 6.5, 7], label: 'Time Slept' }
     ];
-    public lineChartLabels: Array<any> = ['3/28/2017', '3/29/2017', '3/30/2017', '3/31/2017', '4/1/2017', '4/2/2017', '4/3/2017', '4/4/2017', '4/5/2017', '4/6/2017' ];
-    //public lineChartLabels: Array<any> = [0];
-
+    public lineChartLabels: Array<any> = ['3/28/2017', '3/29/2017', '3/30/2017', '3/31/2017', '4/1/2017', '4/2/2017', '4/3/2017', '4/4/2017', '4/5/2017', '4/6/2017', '4/7/2017' ];
     public lineChartOptions: any = {
         responsive: true,
         animation: false,
@@ -135,18 +109,15 @@ export class HomePage {
 
     // events
     public chartClicked(e: any): void {
-        console.log("test13");
         console.log(e);
     }
 
     public chartHovered(e: any): void {
-        console.log("test14");
         console.log(e);
     }
    
     //The user has pressed the button that they have gone to sleep
     sleep() {
-        console.log("Ping");
         //Disable the sleep button, since we are already sleeping. 
         this.disableSleep = true;
         this.disableWake = false;
@@ -155,8 +126,6 @@ export class HomePage {
         this.sleepDate = new Date().toLocaleDateString();
         this.sleepTime = new Date().toLocaleTimeString();
 
-
-        console.log("test16");
         //Debug
         console.log('Sleep');
         console.log(this.sleepTime);
@@ -169,126 +138,119 @@ export class HomePage {
 
     //The user has woke up for the day
     wake() {
-        console.log("Ping");
-        //Disable the sleep button, since we are already sleeping
+         //Disable the sleep button, since we are already sleeping
         this.disableSleep = false;
         this.disableWake = true;
 
-        var passedMins;
-        var passedHours;
-        var passedSeconds;
-        var prevSeconds;
-        var tempSeconds;
-        var prevTime;
-        var prevDate;
-        var curTime;
-        var curDate;
+         var passedMins;
+         var passedHours;
+         var passedSeconds;
+         var prevSeconds;
+         var tempSeconds;
+         var prevTime;
+         var prevDate;
+         var curTime;
+         var curDate;
 
+         
+         //Get the current and time and date
+         this.currentTime = new Date().toLocaleTimeString();
+         curTime = this.currentTime.split(":");
 
-        //Get the current and time and date
-        this.currentTime = new Date().toLocaleTimeString();
-        curTime = this.currentTime.split(":");
+         this.currentDate = new Date().toLocaleDateString();
+         curDate = this.currentDate.split(":");
 
-        this.currentDate = new Date().toLocaleDateString();
-        curDate = this.currentDate.split(":");
+         //Retrieve the time the user went to sleep
+         prevTime = this.sleepTime.split(":");
+         tempSeconds = prevTime[2];
 
-        //Retrieve the time the user went to sleep
-        prevTime = this.sleepTime.split(":");
-        tempSeconds = prevTime[2];
+         //Retrive the date the user went to sleep
+         prevDate = this.sleepDate.split(":");
 
-        //Retrive the date the user went to sleep
-        prevDate = this.sleepDate.split(":");
+         //Our value has a PM on the end, we need to remove it
+         prevSeconds = tempSeconds.split(" ");
+         prevTime[2] = prevSeconds[0];
 
-        //Our value has a PM on the end, we need to remove it
-        prevSeconds = tempSeconds.split(" ");
-        prevTime[2] = prevSeconds[0];
+         //Calculate how much time has passed
+         //Hrs
+         passedHours = (12 - Number(prevTime[0]));
+         passedHours = ((Number(curTime[0]) + Number(passedHours)) -12);
 
-        //Calculate how much time has passed
-        //Hrs
-        passedHours = (12 - Number(prevTime[0]));
-        passedHours = ((Number(curTime[0]) + Number(passedHours)) - 12);
+         //Mins
+         passedMins = (60 - Number(prevTime[1]));
+         passedMins = ((Number(curTime[1]) + Number(passedMins)) - 60);
 
-        //Mins
-        passedMins = (60 - Number(prevTime[1]));
-        passedMins = ((Number(curTime[1]) + Number(passedMins)) - 60);
+         //If there are more than 60 minutes, convert to hours and minutes
+         if (Number(passedMins) > 60) {
 
-        //If there are more than 60 minutes, convert to hours and minutes
-        if (Number(passedMins) > 60) {
+             passedHours = Math.floor((passedHours + (Number(passedMins) / 60)));
+             console.log('passedHrs', passedHours);
+             console.log('passedMins', passedMins);
+             passedMins = Math.floor((passedMins - (passedHours * 60)));
+         }
 
-            passedHours = Math.floor((passedHours + (Number(passedMins) / 60)));
-            console.log('passedHrs', passedHours);
-            console.log('passedMins', passedMins);
-            passedMins = Math.floor((passedMins - (passedHours * 60)));
-        }
+        
 
+         /*
+         //TEMP
+         var tempMins = (passedMins / 100);
+         var tempTime = (String(passedHours).concat(".").concat(passedMins));
+         console.log("passedMins", passedMins);
+         console.log('passedHrs', passedHours);
+         console.log("tempMins", tempMins);
+         console.log("tempTime", tempTime);
+         //
+         */
 
+         /*
 
-        /*
-        //TEMP
-        var tempMins = (passedMins / 100);
-        var tempTime = (String(passedHours).concat(".").concat(passedMins));
-        console.log("passedMins", passedMins);
-        console.log('passedHrs', passedHours);
-        console.log("tempMins", tempMins);
-        console.log("tempTime", tempTime);
-        //
+         let _lineChartData: Array<any> = new Array(this.lineChartData.length);
+
+         for (let i = 0; i < this.lineChartData.length; i++) {
+
+             _lineChartData[i] = { data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label };
+
+             for (let j = 0; j < this.lineChartData[i].data.length; j++) {
+                 _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
+
+             }
+         }
+         this.lineChartData = _lineChartData;
+
         */
+         
+         /*
+         var tA = [];
+         for (var i = 0, item; item = this.lineChartData[i++];) {
+             tA[i] = new String(item[i]);
+         }
+         */
+         /*
+         for (var a = 0; a < this.lineChartData.length; a++)
+         {
+             tempArray[a] = Number(this.lineChartData[a]);
+             console.log("LoopNumber", Number(this.lineChartData[a]));
+         }
+         */
 
-        /*
-
-        let _lineChartData: Array<any> = new Array(this.lineChartData.length);
-
-        for (let i = 0; i < this.lineChartData.length; i++) {
-
-            _lineChartData[i] = { data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label };
-
-            for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-                _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-
-            }
-        }
-        this.lineChartData = _lineChartData;
-
-       */
-
-        /*
-        var tA = [];
-        for (var i = 0, item; item = this.lineChartData[i++];) {
-            tA[i] = new String(item[i]);
-        }
-        */
-        /*
-        for (var a = 0; a < this.lineChartData.length; a++)
-        {
-            tempArray[a] = Number(this.lineChartData[a]);
-            console.log("LoopNumber", Number(this.lineChartData[a]));
-        }
-        */
-
-        //********
+         //********
 
         //FOR TESTING --ONLY--
         // Number(passedHours += 2);
 
-        console.log('ERROR1', this.lineChartLabels);
-        console.log('ERROR2', this.lineChartData[3]);
-        console.log('ERROR3', this.currentDate);
+         //Record the time slept
+         this.lineChartLabels.push(this.currentDate);
+         this.lineChartData[0].data.push(Number((String(passedHours).concat(".").concat(passedMins))));
 
-        console.log('HERE');
-        //Record the time slept
-        this.lineChartLabels.push(this.currentDate);
-        console.log('OR HERE');
-        this.lineChartData.push(Number((String(passedHours).concat(".").concat(passedMins))));
-        console.log('MAYBE HERE');
-         //this.lineChartData[1]--;
+         this.lineChartData[0]['data'][1]--;
          // just trying refresh full variable
-         ///this.lineChartData = this.lineChartData.slice();
+         this.lineChartData = this.lineChartData.slice();
 
          var comboArray: Array<any> = [0,0];
          comboArray[0] = this.lineChartData;
          comboArray[1] = this.lineChartLabels;
 
-         console.log('THIS?');
+
          this.events.publish('SleepWake:wake', comboArray);
 
         /*
@@ -299,7 +261,7 @@ export class HomePage {
          //DEBUG
          console.log('----TIME DIFFERENCE-----');
 
-         console.log("TimeTable", this.lineChartData);
+         console.log("TimeTable", this.lineChartData[0].data);
          console.log("DayTable", this.lineChartLabels);
 
         console.log('prevTime', prevTime);
